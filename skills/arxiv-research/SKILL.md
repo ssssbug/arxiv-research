@@ -1,75 +1,93 @@
 ---
 name: arxiv-research
-description: 自动获取 arxiv LLM 论文并生成中文研究报告
-argument-hint: <研究主题，如 "LLM 推理优化" 或 "LLM Agent 研究">
+description: 自动获取 arxiv 论文、深度阅读并生成中文研究报告（包含伪代码实现）
+argument-hint: <研究主题，如 "LLM Agent" 或 "LLM 推理优化">
 level: 3
 ---
 
-# Arxiv 论文研究技能
+# Arxiv 深度论文研究技能
 
-自动从 arxiv 获取指定主题的最新论文，解析摘要，分析趋势，并生成中文研究报告。
+自动从 arxiv 获取论文、下载 PDF、深度阅读核心方法，并生成包含伪代码实现的详细报告。
 
 ## 功能
 
-1. 通过 arxiv API 获取指定主题的论文
-2. 解析论文标题、作者、摘要、日期
-3. 按研究方向分类整理
-4. 生成 Obsidian 友好的中文报告（带 front-matter 和双向链接）
+1. **论文获取**：通过 arxiv API 获取指定主题的最新论文
+2. **PDF 下载**：自动下载论文 PDF 全文
+3. **深度阅读**：解析 PDF 提取核心方法、贡献和实验结果
+4. **伪代码生成**：根据论文描述生成关键方法的伪代码实现
+5. **Obsidian 友好**：生成带 front-matter 和标签的中文报告
 
 ## 使用方式
 
+### Claude Code 中使用
+
 ```
-/arxiv-research LLM 推理优化最新进展
-/arxiv-research RAG 和 Agent 系统
-/arxiv-researchtransformer 架构改进
+/arxiv-research LLM Agent 系统最新进展
+/arxiv-research 深度学习模型优化
+```
+
+### 命令行使用
+
+```bash
+# 获取论文并生成深度报告
+python scripts/arxiv-deep-research.py --topic "LLM Agent" --days 7
+
+# 指定输出目录
+python scripts/arxiv-deep-research.py --topic "transformer" --output ./reports/
+```
+
+## 研究流程
+
+```
+1. 搜索 arxiv API
+       ↓
+2. 获取论文列表（摘要）
+       ↓
+3. 下载 Top N 论文 PDF
+       ↓
+4. 深度阅读 PDF
+       ↓
+5. 提取：核心问题、贡献、方法、实验结果
+       ↓
+6. 生成伪代码实现
+       ↓
+7. 输出中文报告（Markdown）
 ```
 
 ## 报告格式
 
-生成的报告包含：
-- **Front-matter**：Obsidian 兼容的 tags、日期、类型
-- **执行摘要**：核心发现概览
-- **分类论文表**：按研究方向整理的论文列表
-- **关键发现**：每篇重要论文的详细分析
-- **跨领域主题**：跨研究方向的主题分析
-- **实践建议**：基于论文的可行建议
+每个报告包含：
+- **Front-matter**：Obsidian 兼容 tags、日期、类型
+- **论文摘要**：核心问题和方法概述
+- **核心贡献**：主要创新点
+- **方法详解**：数学形式化 + 架构图描述
+- **伪代码实现**：关键方法的代码片段
+- **实验结果**：关键数据和对比
+- **实践洞察**：可落地的建议
 
 ## 研究方向
 
-当指定 "LLM" 泛指时，默认覆盖四个方向：
-1. **评估基准** (benchmarks)：benchmark、evaluation、performance
-2. **推理优化** (optimization)：quantization、distillation、inference
-3. **Agent/RAG** (agents)：agent、RAG、retrieval、tool、memory
-4. **架构改进** (architecture)：architecture、attention、transformer、context
+默认覆盖四个方向：
+1. **评估基准**：benchmark、evaluation、performance
+2. **推理优化**：quantization、distillation、inference
+3. **Agent/RAG**：agent、RAG、retrieval、tool
+4. **架构改进**：architecture、attention、transformer
 
-## 输出路径
+## 目录结构
 
-报告保存至：`{project}/arxiv-llm-research-{YYYY-MM-DD}.md`
-原始数据保存至：`{project}/.omc/research/arxiv-{date}/`
-
-## 脚本位置
-
-配套脚本：`scripts/arxiv-llm-weekly-report.py`
-
-```bash
-# 命令行用法
-python scripts/arxiv-llm-weekly-report.py                    # 生成周报
-python scripts/arxiv-llm-weekly-report.py --days 30          # 月报
-python scripts/arxiv-llm-weekly-report.py --output custom.md # 自定义输出
 ```
-
-## 执行流程
-
-1. 解析用户输入的研究主题
-2. 构建 arxiv 查询语句
-3. 调用 arxiv API 获取论文列表
-4. 解析 XML 响应提取论文元数据
-5. 按研究方向分类
-6. 生成中文报告
-7. 保存到项目目录
+.
+├── scripts/
+│   ├── arxiv-llm-weekly-report.py    # 周报脚本
+│   └── arxiv-deep-research.py       # 深度研究脚本
+├── papers/                          # 下载的 PDF
+├── deep-research-report-{date}.md   # 深度报告
+└── arxiv-llm-research-{date}.md     # 周报
+```
 
 ## 注意事项
 
+- PDF 解析需要 `pymupdf` 库：`pip install pymupdf`
 - API 请求有频率限制，每次查询间隔建议 3 秒
-- 报告自动去重，同一篇论文不会重复出现
-- 使用中文撰写所有分析内容
+- 建议每次深度研究选择 2-3 篇最有价值的论文
+- 伪代码基于论文描述，实际实现可能需要调整
